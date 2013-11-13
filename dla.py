@@ -116,8 +116,34 @@ for n in range(N):
 
     grid[ix, iy] = 1
 
+# count boxes
+box_lengths = []
+i = 2
+while i < side:
+    box_lengths.append(i)
+    i *= 2
+
+box_count = {}                  # results dictionary
+for box in box_lengths:
+    box_count[box] = 0
+    start_y = 0
+    while start_y < side:
+        
+        start_x = 0
+        while start_x < side:
+            # if there's a 1 in the box
+            if sum(sum( grid[start_x:start_x+box, start_y:start_y+box] )) > 0:
+                box_count[box] += 1
+
+            start_x += box
+
+        start_y += box
+
+print 'hihi'
+print(box_count)
+
 with open("map.dat", "w") as f:
     for y_ind, row in enumerate(grid):
         for x_ind, val in enumerate(row):
 
-            f.write( '{0} {1} {2}\n'.format(x_ind, y_ind, val))
+            f.write( '{0} {1} {2}\n'.format(x_ind, y_ind, val) )
