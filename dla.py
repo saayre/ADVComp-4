@@ -119,9 +119,9 @@ for n in range(N):
 # count boxes
 box_lengths = []
 i = 2
-while i < side:
+while i < side/4:
     box_lengths.append(i)
-    i *= 2
+    i += 1
 
 box_count = {}                  # results dictionary
 for box in box_lengths:
@@ -139,8 +139,10 @@ for box in box_lengths:
 
         start_y += box
 
-print 'hihi'
-print(box_count)
+with open("dims.dat", "w") as f:
+    for val, ind in enumerate(box_count):
+
+        f.write( '{0} {1}\n'.format(num.log10(ind), num.log10(val)) )
 
 with open("map.dat", "w") as f:
     for y_ind, row in enumerate(grid):
