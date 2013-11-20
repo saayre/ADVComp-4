@@ -5,17 +5,21 @@
 #include<iostream>
 #include<fstream>
 #include<new>
+#include<vector>
+#include<cmath>
 
 using namespace std;
 
 class MyGrid {
 	int **grid;
 	int bound;
+	int grid_sum(int, int, int, int);
   public:
 	MyGrid (int);
 	int check(int, int, int);
 	void add(int, int);
 	void grid_out();
+	vector<int> box_count(vector<int>);
 };
 
 MyGrid::MyGrid(int side) {
@@ -74,4 +78,65 @@ void MyGrid::grid_out() {
 	}
 
 	map.close();
+}
+
+vector<int> MyGrid::box_count(vector<int> length_list) {
+	vector<int> box_count;
+	for (unsigned int i = 0 ; i != length_list.size() ; i++) {
+		
+		int len = length_list[i];
+		int count = 0;
+		int y = 0;
+
+		while (y < bound) {
+
+			int x = 0;
+			while (x < bound) {
+
+				if ( grid_sum(x, x+len, y, y+len) > 0 ) {
+					count++;
+				}
+
+				x += len;
+			}
+
+			y += len;
+		}
+
+		box_count.push_back(count);
+	}
+
+	return box_count;
+}
+
+int MyGrid::grid_sum(int x_l, int x_r, int y_t, int y_b) {
+	int sum = 0;
+	if (y_b > bound+1) y_b = bound+1;
+	if (x_r > bound+1) x_r = bound+1;
+	for (int y_it = y_t ; y_it < y_b ; y_it++) {
+		for (int x_it = x_l ; x_it < x_r ; x_it++) {
+			if (grid[x_it][y_it] == 1) sum++;
+		}
+	}
+
+	return sum;
+}
+
+vector<int> list_populate(int size) {
+	vector<int> list;
+	for (int i = 2 ; i < size ; i+=2) {
+		list.push_back(i);
+	}
+	return list;
+}
+
+void dims_out(vector<int> length_list, vector<int> box_count) {
+	ofstream dims;
+	dims.open("dims.dat");
+
+	for (unsigned int i = 0 ; i < length_list.size() ; i++) {
+		dims << log10(length_list[i]) << ' ' << log10(box_count[i]) << '\n';
+	}
+
+	dims.close();
 }

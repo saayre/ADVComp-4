@@ -7,6 +7,12 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	// help text
+	if (argc == 1) {
+		cout << "Usage: dla side n_particles diag\n";
+		exit(EXIT_FAILURE);
+	}
+	
 	// arg check for diagonal
 	int diag = 0;
 	if (argc > 3) diag = 1;
@@ -56,10 +62,11 @@ int main(int argc, char* argv[])
 	}
 
 	// count boxes
-	// int length_list[] = fun;
-	// int box_count[] = obj.yeah;
+	vector<int> length_list = list_populate(side);
+	vector<int> box_count = obj.box_count(length_list);
 
 	// print dimension and map results
+	dims_out(length_list, box_count);
 	obj.grid_out();
 
 	return 0;
