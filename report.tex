@@ -1,0 +1,46 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+
+
+\begin{document}
+
+
+\title{Diffusion Limited Aggregation}
+\date{}
+\author{Sayre Christenson}
+
+\maketitle
+
+
+\begin{abstract}
+
+Diffusion limited aggregation generates a graph of adjoining points.
+
+
+\end{abstract}
+
+\section*{Introduction}
+
+The diffusion limited aggregation algorithm is a rough computational approximation of certain physical processes like grain growth in cooling liquid metals and dielectric breakdown.
+The algorithm random walks a particle along a grid until it touches another particle, then leaves that particle and starts a new one.
+Initial layouts can be specified, and those lead to qualitative differences in the final fractal pattern.
+
+
+\section*{Aggregation Runs}
+
+There are two interpretations of the ending condition of each individual random walk:
+
+\begin{enumerate}
+\item{A particle occupies a space horizontally or vertically adjacent grid point to the updated position of the walking particle.}
+\item{A particle occupies a space diagonally, horizontally, or vertically adjacent grid point to the updated position of the walking particle.}
+\end{enumerate}
+
+Little difference can be observed between each at the large scale, though at the smallest scale the difference between horizontal/vertical and diagonal branching are apparent.
+
+
+
+\section*{Dimensionality}
+
+
+\section*{Conclusions}
