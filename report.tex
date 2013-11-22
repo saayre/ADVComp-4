@@ -24,7 +24,17 @@ Diffusion limited aggregation generates a graph of adjoining points.
 
 The diffusion limited aggregation algorithm is a rough computational approximation of certain physical processes like grain growth in cooling liquid metals and dielectric breakdown.
 The algorithm random walks a particle along a grid until it touches another particle, then leaves that particle and starts a new one.
-Initial layouts can be specified, and those lead to qualitative differences in the final fractal pattern.
+Initial layouts can be specified, and those lead to visual differences in the final fractal pattern, along with the quantitative difference of fractal dimension.
+
+This implementation of diffusion limited aggregation has the following steps:
+
+\begin{enumerate}
+\item{Place the initial pattern.}
+\item{Randomly place a particle on the edge of a 2-D grid (with side of 512) with toroidal periodic boundary conditions.}
+\item{Random walk the particle until it touches an already placed particle.  (See \ref{Aggregration Runs} for more details.)}
+\item{Repeat the previous two steps for 10000 particles.}
+\item{Measure the dimension of the resulting pattern.  (See \ref{Dimensionality} for more details.)}
+\end{enumerate}
 
 
 \section*{Aggregation Runs}
@@ -36,11 +46,29 @@ There are two interpretations of the ending condition of each individual random 
 \item{A particle occupies a space diagonally, horizontally, or vertically adjacent grid point to the updated position of the walking particle.}
 \end{enumerate}
 
-Little difference can be observed between each at the large scale, though at the smallest scale the difference between horizontal/vertical and diagonal branching are apparent.
+Little difference can be observed (as in Figure 1) between each at the large scale, though at the smallest scale the difference between horizontal/vertical and diagonal branching are apparent.
 
+\includegraphics{}
+
+
+In the previous figure, a single particle was placed at approximately the center of the grid as the growth seed.
+Any starting pattern representable as a set of 2-D coordinates is possible, and some are tested in \ref{Extre Experimentation}.
 
 
 \section*{Dimensionality}
+
+
+The definition of dimension is
+
+\[
+D 
+
+
+\section*{Extra Experimentation}
+
+%% circle start
+
+%% top edge only start
 
 
 \section*{Conclusions}
