@@ -7,6 +7,7 @@
 #include<new>
 #include<vector>
 #include<cmath>
+#include<string.h>
 
 using namespace std;
 
@@ -15,25 +16,33 @@ class MyGrid {
 	int bound;
 	int grid_sum(int, int, int, int);
   public:
-	MyGrid (int);
+	MyGrid (int, char*);
 	int check(int, int, int);
 	void add(int, int);
 	void grid_out();
 	vector<int> box_count(vector<int>);
 };
 
-MyGrid::MyGrid(int side) {
+MyGrid::MyGrid(int side, char *circ) {
 	grid = new int*[side];
 	bound = side - 1;
+
+	// grid seed
+	double radius = -1;
+	if (circ[0] > '0' && circ[0] < '9') radius = atof(circ);
 
 	for (int i = 0 ; i < side ; i++) {
 		grid[i] = new int[side];
 
-		for (int j = 0 ; j < side ; j++) grid[i][j] = 0;
+		for (int j = 0 ; j < side ; j++) {
+
+			grid[i][j] = 0;
+			if (sqrt( pow(i - side/2, 2) + pow(j - side/2, 2) ) < radius) grid[i][j] = 1;
+		}
 	}
 
-	// grid seed
 	grid[side/2][side/2] = 1;
+		
 }
 
 // return 1 when a neighbor is on

@@ -8,19 +8,19 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	// help text
-	if (argc == 1) {
-		cout << "Usage: dla side n_particles diag\n";
+	if (argc < 5) {
+		cout << "Usage: dla side n_particles circ diag\n";
 		exit(EXIT_FAILURE);
 	}
 	
 	// arg check for diagonal
 	int diag = 0;
-	if (argc > 3) diag = 1;
+	if (strcmp(argv[4], "y") == 0) diag = 1;
 		
 	// initialize grid
 	int side = atoi(argv[1]);
 	int bound = side-1;
-	MyGrid obj (side);
+	MyGrid obj (side, argv[3]);
 	
 	// loop over walking in particles
 	int N = atoi(argv[2]);
