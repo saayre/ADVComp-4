@@ -18,25 +18,25 @@
 
 \begin{abstract}
 
-Diffusion limited aggregation generates a graph of adjoining points.
-
+Diffusion limited aggregation produces a graph of adjoining points.
+Some simple fractals are generated, and shown to have a dimensionality of approximately 1.5.
+Other patterns are generated using a circular starting seed, and some using an anisotropic aggregation.
 
 \end{abstract}
 
 \section*{Introduction}
 
 The diffusion limited aggregation algorithm is a rough computational approximation of certain physical processes like grain growth in cooling liquid metals and dielectric breakdown.
-The algorithm random walks a particle along a grid until it touches another particle, then leaves that particle and starts a new one.
+The algorithm performs a random walk on a single particle along a grid until it touches another particle, then leaves that particle and starts a new one.
 Initial layouts can be specified, and those lead to visual differences in the final fractal pattern, along with the quantitative difference of fractal dimension.
 
 This implementation of diffusion limited aggregation has the following steps:
-
 \begin{enumerate}
 \item{Place the initial pattern, or seed.}
 \item{Randomly place a particle on the edge of a 2-D grid (with side of 512) with toroidal periodic boundary conditions.}
-\item{Random walk the particle until it touches an already placed particle.  (See \ref{Aggregration Runs} for more details.)}
+\item{Random walk the particle until it touches an already placed particle.  (See next section for more details.)}
 \item{Repeat the previous two steps for 10000 particles.}
-\item{Measure the dimension of the resulting pattern.  (See \ref{Dimensionality} for more details.)}
+\item{Measure the dimension of the resulting pattern.  (See Dimensionality for more details.)}
 \end{enumerate}
 
 
@@ -45,8 +45,8 @@ This implementation of diffusion limited aggregation has the following steps:
 There are two interpretations of the ending condition of each individual random walk:
 
 \begin{enumerate}
-\item{A particle occupies a space horizontally or vertically adjacent grid point to the updated position of the walking particle.}
-\item{A particle occupies a space diagonally, horizontally, or vertically adjacent grid point to the updated position of the walking particle.}
+\item{A particle occupies a horizontally or vertically adjacent grid point to the updated position of the walking particle.}
+\item{A particle occupies a diagonally, horizontally, or vertically adjacent grid point to the updated position of the walking particle.}
 \end{enumerate}
 
 The choice of interpretation does affect the features of the fractal (as shown in Figure \ref{hdv}).
@@ -54,27 +54,8 @@ Horizontal and vertical only aggregations are much more densely packed, and so t
 Also, for the single point seed, whether or not diagonal touching is allowed generally determines the direction of the larger branches.
 This is an effect of the ``square'' nature of the particles used, because there are more ways a particle can move to diagonal touching than horizontal or vertical touching.
 
-%% hdv
-\begin{figure}[h]
-  \centering
-
-  \begin{subfigure}[b]{0.45\textwidth}
-    \fbox{\includegraphics[width=1.1\textwidth]{hvmap.png}}
-    \caption{Horizontal and vertical aggregation only.}
-  \end{subfigure}
-  \qquad
-  \begin{subfigure}[b]{0.45\textwidth}
-    \fbox{\includegraphics[width=1.1\textwidth]{dmap.png}}
-    \caption{Including diagonal aggregation.}
-  \end{subfigure}
-
-  \caption{Side = 512, Number of Particles = 10000}
-  \label{hdv}
-
-\end{figure}
-
 In the previous figures, a single particle was placed at approximately the center of the grid as the growth seed.
-Any starting pattern representable as a set of 2-D coordinates is possible, and in particular a circle is tested in \ref{Extra Experimentation}.
+Any starting pattern representable as a set of 2-D coordinates is possible, and in particular a circle is tested in the ``Extra Experimentation'' section.
 
 
 \section*{Dimensionality}
@@ -90,19 +71,74 @@ The way $N$ and $s$ are counted is as follows: the image is split up into boxes 
 Repeating this process yields several data points, and a linear regression returns the slope, $D$, the fractal's dimension.
 From experimentation, the line fit is straightest when considering only box sizes less than 100 pixels, so the chosen box sizes for finding the dimensionality of each fractal is the set of even numbers less than or equal to 100.
 
-The dimensionality for the same images used in Figure \ref{hdv} are -1.555 and -1.539, as shown in Figure \ref{dims}.
+The dimensionality for the same images used in Figure \ref{hdv} are 1.555 and 1.539, as shown in Figure \ref{dims}.
 Even though the images are easily distinguishable by the naked eye, the specific rules on how particles touch do not seem to have an effect of more than a few percent on the fractal dimension.
+
+
+\section*{Extra Experimentation}
+
+
+%% circle start
+Several of the example slides had seeds with sharp geometric features, and demonstrated that sharp features were more likely to aggregate particles than flat features.
+However, a quick follow-up question is: is there any consistent direction particles will aggregate on when the seed has no sharp features?
+The images in Figure \ref{circ} were produced by seeding all grid points less than a specified distance from the center.
+
+Unsurprisingly, without any sharp features to dominate growth, branches off the circle appear at more than just four primary angles as in the single point.
+The tendency for horizontal-vertical only touching to grow straight up, down, left, and right is damped, but still present in the circular grid seed.
+Likewise, diagonal touching has a damped tendency for diagonal growth.
+However, the damping seems to increase with increasing circle radius, meaning circular seeds which take up larger fractions of the whole grid may show a more even distribution of growth directions.
+
+%% top edge only start
+Another question easily answered is: to what extent does anisotropy affect the process of aggregation?  
+Phrased differently, this question could ask how the fractal pattern changes when particles only approach from certain directions.
+This is accomplished within this implementation by only placing particles on one edge to start, and replacing that edge's periodic boundary condition with a reflection.
+
+As can be seen in Figure \ref{top}, where the images were generated by only walking particles down from the top edge to a lower placed seed, the fractal grows mainly in one direction.
+The horizontal-vertical touching image unsurprisingly grows branches closer together, but the diagonal touching image repeatedly splits branches and then favors one over the other.
+Though edge effects due to the finite size of the grid eventually appear, it seems as though the diagonal touching aggregation would have eventually produced a set of branches that totally blocked off the starting seed from the production edge, while the horizontal and vertical only aggregation kept a fairly uniform branch width.
+
+
+\section*{Conclusions}
+
+
+As relevant as this is for simulation of physical phenomena, diffusion limited aggregation has so many possibilities for new rules and modifications that it alone could end up being a semester long project.
+However, the method has certain limitations that limit its effectiveness for modeling physical situations.
+Primarily, each particle is snapped to a grid, so spacing is discretized into two possibilities: 1 and $\sqrt(2)$, which doesn't provide a good analog to reality, in which bond lengths between atoms can change depending on several factors.
+In addition, the issue of the interpretation of touching biases aggregations toward or away from overall diagonal growth, though this may be fairly easily remedied by creating a probabilistic model for a particle ``sticking'' to another.
+The purely rigid nature of the aggregation structures would also produce unphysical results for large formations, because interatomic and intermolecular forces allow for flexible and mutable bond sizes and angles while the individual grid cells, once attached to the aggregate, are perfectly immobile.
+
+
+
+%% hdv
+\begin{figure}
+  \centering
+
+  \begin{subfigure}[b]{0.85\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{hvmap.png}}
+    \caption{Horizontal and vertical aggregation only.}
+  \end{subfigure}
+  \qquad
+  \begin{subfigure}[b]{0.85\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{dmap.png}}
+    \caption{Including diagonal aggregation.}
+  \end{subfigure}
+
+  \caption{}
+  \label{hdv}
+
+\end{figure}
 
 %% dims
 \begin{figure}
   \centering
+  \vspace{-10mm}
 
-  \begin{subfigure}[b]{0.45\textwidth}
-    \includegraphics[width=1.2\textwidth]{hvdims.png}
+  \begin{subfigure}[b]{0.85\textwidth}
+    \includegraphics[width=1\textwidth]{hvdims.png}
   \end{subfigure}
-  \qquad
-  \begin{subfigure}[b]{0.45\textwidth}
-    \includegraphics[width=1.2\textwidth]{ddims.png}
+
+  \begin{subfigure}[b]{0.85\textwidth}
+    \includegraphics[width=1\textwidth]{ddims.png}
   \end{subfigure}
 
   \caption{Opposite slope is caused by using the logarithm of the box size rather than the inverse box size.}
@@ -110,28 +146,50 @@ Even though the images are easily distinguishable by the naked eye, the specific
 
 \end{figure}
 
+%% circle
+\begin{figure}
+  \centering
+  \vspace{-15mm}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{hvcirc.png}}
+    \caption{Radius = 30 pixels, Horizontal-Vertical}
+  \end{subfigure}
+  \qquad
+  \begin{subfigure}[b]{0.45\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{dcirc.png}}
+    \caption{Radius = 30 pixels, Diagonal}
+  \end{subfigure}
 
-\section*{Extra Experimentation}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{hvcirc50.png}}
+    \caption{Radius = 50 pixels, Horizontal-Vertical}
+  \end{subfigure}
+  \qquad
+  \begin{subfigure}[b]{0.45\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{dcirc50.png}}
+    \caption{Radius = 50 pixels, Diagonal}
+  \end{subfigure}
 
-%% circle start
-Several of the example slides had seeds with sharp geometric features, and demonstrated that sharp features were more likely to aggregate particles than flat features.
-However, a quick follow-up question is: is there any consistent direction particles will aggregate on when the seed has no sharp features?
-The images in Figure \ref{circle} were produced by seeding all grid points less than a specified distance from the center.
-%% talk about results
-
-%% circle, whole page?
-%% \begin{figure}
-%%   \centering
-
-%%   \begin{subfigure}[b]{0.45\textwidth}
-
-%% top edge only start
-Another question easily answered is: to what extent does anisotropy affect the process of aggregation?  
-Phrased differently, this question asks how the fractal pattern changes when particles only approach from certain directions.
-This is accomplished within this implementation by only placing particles on certain image edges to start, and selectively removing periodic boundary conditions.
+  \caption{Size = 512, Number of Particles 10000}
+  \label{circ}
+\end{figure}
 
 
-\section*{Conclusions}
+%% top
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.85\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{hvtop.png}}
+    \caption{Anisotropic, Horizontal-Vertical}
+  \end{subfigure}
 
+  \begin{subfigure}[b]{0.85\textwidth}
+    \fbox{\includegraphics[width=1\textwidth]{dtop.png}}
+    \caption{Anisotropic, Diagonal}
+  \end{subfigure}
+
+  \caption{The blue dot marks the original seed location.}
+  \label{top}
+\end{figure}
 
 \end{document}

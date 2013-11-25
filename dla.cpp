@@ -8,19 +8,20 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	// help text
-	if (argc < 5) {
-		cout << "Usage: dla side n_particles circ diag\n";
+	if (argc < 6) {
+		cout << "Usage: dla side n_particles circ diag top\n";
 		exit(EXIT_FAILURE);
 	}
 	
-	// arg check for diagonal
-	int diag = 0;
+	// arg check for diagonal and top
+	int diag = 0; int top = 0;
 	if (strcmp(argv[4], "y") == 0) diag = 1;
+	if (strcmp(argv[5], "y") == 0) top = 1;
 		
 	// initialize grid
 	int side = atoi(argv[1]);
 	int bound = side-1;
-	MyGrid obj (side, argv[3]);
+	MyGrid obj (side, argv[3], top);
 	
 	// loop over walking in particles
 	int N = atoi(argv[2]);
@@ -30,15 +31,22 @@ int main(int argc, char* argv[])
 	for (int n = 0 ; n < N ; n++) {
 
 		// set initial value on edge
-		if (rand() % 2 == 0) {
-			x = rand() % bound;
-			y = (rand() % 2) * bound;
+		if (top == 0) {
+			if (rand() % 2 == 0) {
+				x = rand() % bound;
+				y = (rand() % 2) * bound;
 			
-		}
-		else {
-			y = rand() % bound;
-			x = (rand() % 2) * bound;
+			}
+			else {
+				y = rand() % bound;
+				x = (rand() % 2) * bound;
 
+			}
+		}
+
+		else {
+			y = 0;
+			x = rand() % bound;
 		}
 
 		while (obj.check(x, y, diag) == 0) {
@@ -52,6 +60,11 @@ int main(int argc, char* argv[])
 			else {
 				if (rand() % 2 == 0) y++;
 				else y--;
+			}
+
+			// reflect on y if necessary
+			if (top == 1) {
+				if (y == -1) y = 1;
 			}
 
 			x = (x+side)%side;

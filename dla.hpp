@@ -16,14 +16,14 @@ class MyGrid {
 	int bound;
 	int grid_sum(int, int, int, int);
   public:
-	MyGrid (int, char*);
+	MyGrid (int, char*, int);
 	int check(int, int, int);
 	void add(int, int);
 	void grid_out();
 	vector<int> box_count(vector<int>);
 };
 
-MyGrid::MyGrid(int side, char *circ) {
+MyGrid::MyGrid(int side, char *circ, int top) {
 	grid = new int*[side];
 	bound = side - 1;
 
@@ -41,7 +41,8 @@ MyGrid::MyGrid(int side, char *circ) {
 		}
 	}
 
-	grid[side/2][side/2] = 1;
+	if (top == 0) grid[side/2][side/2] = 1;
+	else grid[side/2][3*side/4] = 1;
 		
 }
 
